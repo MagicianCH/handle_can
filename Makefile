@@ -3,7 +3,7 @@ CC = arm-none-linux-gnueabi-gcc
 
 
 cantest: cantest.o cmd.o
-	$(CC) $(CFLAGS) cantest.o cmd.o -o cantest -g 
+	$(CC) $(CFLAGS) cantest.o cmd.o -o canctrl -g 
 
 cantest.o: cantest.c
 	$(CC) -c cantest.c

@@ -12,6 +12,51 @@ void handle_cmd(unsigned char *data)
 	if(data1 || data2 == 0) {
 		return;
 	}
+	if(data1 & 0x01) {
+		cmd_stop_slowly();
+	}
+	if(data1 & 0x02) {
+		cmd_stop();
+	}
+	if(data1 & 0x04) {
+		cmd_warningled_set(1);
+	} else {
+		cmd_warningled_set(0);
+	}
+	if(data1 & 0x08) {
+		cmd_start();
+	}
+	if(data1 & 0x10) {
+		cmd_power_set(1);	
+	} else {
+		cmd_power_set(0);
+	}
+	if(data1 & 0x20){
+		cmd_frontled_set(1);
+	} else {
+		cmd_frontled_set(0);
+	}
+	if(data1 & 0x40) {
+		cmd_backled_set(1);
+	} else {
+		cmd_backled_set(0);
+	}
+	if(data2 & 0x01) {
+		cmd_goahead();
+	} 
+	if(data2 & 0x02) {
+		cmd_goback();
+	}
+	if(data2 & 0x04) {
+		cmd_beeper_set(1);
+	} else {
+		cmd_beeper_set(0);
+	}
+	if(data2 & 0x08) {
+		cmd_system_set(1);
+	} else {
+		cmd_system_set(0);
+	}
 
 }
 

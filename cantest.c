@@ -34,6 +34,7 @@ static void handle_frame(struct can_frame *fr)
 	printf("data = ");
 	for (i = 0; i < fr->can_dlc; i++)
 		printf("%02x ", fr->data[i]);
+	printf("\n");
 	if(fr->data[0] == 0x02){
 		for(i = 0; i < 4; i++){
 			rdata[i] = fr->data[i];
