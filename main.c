@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <time.h>
 #include "cmd.h"
+#include "serial.h"
 
 #ifndef AF_CAN
 #define AF_CAN 29
@@ -24,10 +25,13 @@
 #define errout(_s)	fprintf(stderr, "error class: %s\n", (_s))
 #define errcode(_d) fprintf(stderr, "error code: %02x\n", (_d))
 
+#define SERIAL_SEND 1
+#define ttyO1   1
+
 static void handle_frame(struct can_frame *fr)
 {
-	int i;
-	unsigned char rdata[4];
+	int i, len;
+	unsigned char rdata[10];
 	printf("%08x\n", fr->can_id & CAN_EFF_MASK);
 	//printf("%08x\n", fr->can_id);
 	printf("dlc = %d\n", fr->can_dlc);
@@ -36,7 +40,7 @@ static void handle_frame(struct can_frame *fr)
 		printf("%02x ", fr->data[i]);
 	printf("\n");
 	if(fr->data[0] == 0x02){
-		for(i = 0; i < 4; i++){
+		for(i = 0; i < 8; i++){
 			rdata[i] = fr->data[i];
 		}
 	}
@@ -44,8 +48,14 @@ static void handle_frame(struct can_frame *fr)
 		errout("CMD DATA ERROR");
 		return;
 	}
-
+#if SERIAL_SEND
+	len = WriteComPort(rdata, 8);
+	if(len < 0){
+		fprintf(stderr, "Write data to Serial port %d error\n", ttyO1);
+	}
+#else
 	handle_cmd(rdata);
+#endif
 }
 
 static void handle_err_frame(const struct can_frame *fr)
@@ -128,6 +138,18 @@ int main(int argc, char *argv[])
    	struct ifreq ifr;
 	int master = 0;
 
+#if SERIAL_SEND
+	// open serial
+	ret = OpenComPort(ttyO1, 115200, 8, "1", 10);
+	if(ret < 0) {
+		fprintf(stderr, "Open Serial port %d failed\n", ttyO1);
+		return ret;
+	}
+	else {
+		fprintf(stdout, "Open Serial port %d sucess\n");
+	}
+#endif
+
 	srand(time(NULL));
    	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
    	if (s < 0) {
@@ -168,5 +190,8 @@ int main(int argc, char *argv[])
 	test_can_rw(s, master);
 
 	close(s);
+#if SERIAL_SEND
+	CloseComPort();
+#endif
 	return 0;
 }
