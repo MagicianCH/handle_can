@@ -46,14 +46,40 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define DE_Pin GPIO_PIN_0
-#define DE_GPIO_Port GPIOB
-#define RE_Pin GPIO_PIN_1
-#define RE_GPIO_Port GPIOB
-#define LED1_Pin GPIO_PIN_14
-#define LED1_GPIO_Port GPIOB
-#define LED2_Pin GPIO_PIN_15
-#define LED2_GPIO_Port GPIOB
+#define pwm2_Pin GPIO_PIN_0
+#define pwm2_GPIO_Port GPIOA
+#define delay_stop_Pin GPIO_PIN_1
+#define delay_stop_GPIO_Port GPIOA
+#define stop_Pin GPIO_PIN_2
+#define stop_GPIO_Port GPIOA
+#define warn_led_Pin GPIO_PIN_3
+#define warn_led_GPIO_Port GPIOA
+#define start_Pin GPIO_PIN_4
+#define start_GPIO_Port GPIOA
+#define power_off_Pin GPIO_PIN_5
+#define power_off_GPIO_Port GPIOA
+#define pwm3_Pin GPIO_PIN_6
+#define pwm3_GPIO_Port GPIOA
+#define front_led_Pin GPIO_PIN_7
+#define front_led_GPIO_Port GPIOA
+#define system_on_Pin GPIO_PIN_12
+#define system_on_GPIO_Port GPIOB
+#define transmission_state_Pin GPIO_PIN_13
+#define transmission_state_GPIO_Port GPIOB
+#define emergency_stop_Pin GPIO_PIN_14
+#define emergency_stop_GPIO_Port GPIOB
+#define pwm1_Pin GPIO_PIN_8
+#define pwm1_GPIO_Port GPIOA
+#define back_led_Pin GPIO_PIN_5
+#define back_led_GPIO_Port GPIOB
+#define pwm4_Pin GPIO_PIN_6
+#define pwm4_GPIO_Port GPIOB
+#define go_head_Pin GPIO_PIN_7
+#define go_head_GPIO_Port GPIOB
+#define go_back_Pin GPIO_PIN_8
+#define go_back_GPIO_Port GPIOB
+#define horn_Pin GPIO_PIN_9
+#define horn_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

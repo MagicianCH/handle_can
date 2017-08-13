@@ -38,6 +38,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_hal.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -57,15 +58,12 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-void RS485_Transmit(unsigned char *buff, int len);
+
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-unsigned char rxdata[15] = {0};
-uint8_t txdata[20] = {0xFE,0xFD,0x00,0x08,0x00,0x00,0x00,0x01,  //frame head
-											0,0,0,0,0,0,0,0,     //data to fill
-											0x00,0x00,0x00,     //timestamp, not care
-											0x00}; // CRC to fill
+
+void handle_cmd(uint8_t *data);
 
 /* USER CODE END 0 */
 
@@ -73,7 +71,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint8_t i = 0, j = 0, crc = 0;
+	
+	uint8_t rxdata[8] = {0};
 
   /* USER CODE END 1 */
 
@@ -96,11 +95,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
-  MX_USART3_UART_Init();
+  MX_TIM1_Init();
+  MX_TIM3_Init();
+  MX_TIM2_Init();
+  MX_TIM4_Init();
 
   /* USER CODE BEGIN 2 */
-	
-//	HAL_UART_Receive_IT(&huart3, rxdata, 5);
 
   /* USER CODE END 2 */
 
@@ -108,34 +108,19 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//		RS485_Transmit(data, 15);
-		HAL_UART_Receive(&huart3, rxdata, 1,100);
-		while(rxdata[0] != 0x02 ) {
-			HAL_UART_Receive(&huart3, rxdata, 1,100);
+		HAL_UART_Receive(&huart1, rxdata, 1, 100);
+		while(rxdata[0] != 0x02) {
+			HAL_UART_Receive(&huart1, rxdata, 1, 100);
 		}
-		HAL_UART_Receive(&huart3, &rxdata[1], 14,100);
-		//data to send: 0x02, data1~data2,data5~data9
-		for(i = 8, j = 0; i < 16; j++) {
-			if((j==3) || (j==4)) {
-				continue;
-			}
-			else {
-				txdata[i] = rxdata[j];
-				i++;
-			}
-		}
-		crc = txdata[0];
-		for(i = 1; i < 19; i++) {
-			crc ^= txdata[i];
-		}
-		txdata[19] = crc;
-		HAL_UART_Transmit(&huart1, txdata, 20, 100);
+		HAL_UART_Receive(&huart1, &rxdata[1], 7, 200);
+		
+		handle_cmd(rxdata);
+		
+		HAL_Delay(20);
 		
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-//		HAL_GPIO_TogglePin(GPIOB, LED1_Pin);
-		HAL_Delay(20);
 
   }
   /* USER CODE END 3 */
@@ -192,25 +177,32 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void RS485_Transmit(unsigned char *buff, int len)
+void handle_cmd(uint8_t *data)
 {
-	HAL_GPIO_WritePin(GPIOB, DE_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOB, RE_Pin, GPIO_PIN_SET);
+	// handle data1
+	delay_stop(data[1]&0x01);
+	stop(data[1]&0x02);
+	warn_led(data[1]&0x04);
+	start(data[1]&0x08);
+	power_off(data[1]&0x10);
+	front_led(data[1]&0x20);
+	back_led(data[1]&0x40);
 	
-	HAL_UART_Transmit(&huart3, buff, len, 100);
+	// handle data2
+	go_head(data[2]&0x01);
+	go_back(data[2]&0x02);
+	horn(data[2]&0x04);
+	system_on(data[2]&0x08);
 	
-	HAL_GPIO_WritePin(GPIOB, DE_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, RE_Pin, GPIO_PIN_RESET);
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(huart);
-  /* NOTE: This function should not be modified, when the callback is needed,
-           the HAL_UART_RxCpltCallback can be implemented in the user file
-   */
-	HAL_UART_Transmit(&huart1, rxdata, 5, 100);
+	// handle data5
+	transmission_state(data[3]&0x01);
+	emergency_stop(data[3]&0x80);
+	
+	// handle data6~data9
+	pwm_setValue(1, data[4]);
+	pwm_setValue(2, data[5]);
+	pwm_setValue(3, data[6]);
+	pwm_setValue(4, data[7]);
 }
 
 /* USER CODE END 4 */

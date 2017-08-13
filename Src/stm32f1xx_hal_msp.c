@@ -77,6 +77,8 @@ void HAL_MspInit(void)
   __HAL_AFIO_REMAP_SWJ_DISABLE();
 
   /* USER CODE BEGIN MspInit 1 */
+	
+	__HAL_AFIO_REMAP_SWJ_ENABLE();
 
   /* USER CODE END MspInit 1 */
 }

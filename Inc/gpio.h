@@ -50,6 +50,9 @@
 
 /* USER CODE BEGIN Includes */
 
+#include <stdbool.h>
+#include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
@@ -59,6 +62,33 @@
 void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+
+void delay_stop(bool state);
+
+void stop(bool state);
+
+void warn_led(bool state);
+
+void start(bool state);
+
+void power_off(bool state);
+
+void front_led(bool state);
+
+void back_led(bool state);
+
+void go_head(bool state);
+
+void go_back(bool state);
+
+void horn(bool state);
+
+void system_on(bool state);
+
+void transmission_state(bool state);
+
+void emergency_stop(bool state);
+
 
 /* USER CODE END Prototypes */
 

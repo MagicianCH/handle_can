@@ -3,8 +3,8 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'DataExtend' 
- * Target:  'DataExtend' 
+ * Project: 'HandleCmd' 
+ * Target:  'HandleCmd' 
  */
 
 #ifndef RTE_COMPONENTS_H
