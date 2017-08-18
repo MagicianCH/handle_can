@@ -427,7 +427,26 @@ void pwm_setValue(int timx, uint8_t value)
 	printf("pwm%d_setValue(%02x)\n", timx, value);
 #endif	
 }
-
+/*
+void pwm_setValue(int timx, uint8_t value)
+{
+    if(timx == 1) {
+        TIM1->CCR1 = value;
+    }
+    else if(timx == 2) {
+        TIM2->CCR1 = value;
+    }
+    else if(timx == 3) {
+        TIM3->CCR1 = value;
+    }
+    else if(timx == 4) {
+        TIM4->CCR1 = value;
+    }
+    else {
+        return;
+    }
+}
+*/
 /* USER CODE END 1 */
 
 /**
