@@ -44,7 +44,7 @@
 /*
 Defination     Pin
 --------------------
-pwm1  -------  PA8
+pwm1  -------  PA11
 pwm2  -------  PA0
 pwm3  -------  PA6
 pwm4  -------  PB6
@@ -88,11 +88,10 @@ void MX_TIM1_Init(void)
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
   sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -276,7 +275,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle)
 
   /* USER CODE END TIM1_MspPostInit 0 */
     /**TIM1 GPIO Configuration    
-    PA8     ------> TIM1_CH1 
+    PA11     ------> TIM1_CH4 
     */
     GPIO_InitStruct.Pin = pwm1_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -395,6 +394,14 @@ void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle)
 
 /* USER CODE BEGIN 1 */
 
+void pwm_start()
+{
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+}
+
 void pwm_setValue(int timx, uint8_t value)
 {
 	TIM_OC_InitTypeDef sConfigOC;
@@ -405,8 +412,8 @@ void pwm_setValue(int timx, uint8_t value)
 	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 	
 	if(timx == 1) {
-		HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+		HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4);
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 	}
 	else if(timx == 2) {
 		HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1);
@@ -419,6 +426,28 @@ void pwm_setValue(int timx, uint8_t value)
 	else if(timx == 4) {
 		HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_1);
 		HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+	}
+	else {
+		return;
+	}
+#if CMD_DEBUG
+	printf("pwm%d_setValue(%02x)\n", timx, value);
+#endif	
+}
+
+void pwm_setValue2(int timx, uint8_t value)
+{
+	if(timx == 1) {
+		TIM1->CCR4 = value;
+	}
+	else if(timx == 2) {
+		TIM2->CCR1 = value;
+	}
+	else if(timx == 3) {
+		TIM3->CCR1 = value;
+	}
+	else if(timx == 4) {
+		TIM4->CCR1 = value;
 	}
 	else {
 		return;
