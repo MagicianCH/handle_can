@@ -32,13 +32,11 @@ static void handle_frame(struct can_frame *fr)
 {
 	int i, len;
 	unsigned char rdata[10];
-	printf("%08x\n", fr->can_id & CAN_EFF_MASK);
+	unsigned char tdata[10];
+	unsigned char crc = 0;
+	//printf("%08x\n", fr->can_id & CAN_EFF_MASK);
 	//printf("%08x\n", fr->can_id);
-	printf("dlc = %d\n", fr->can_dlc);
-	printf("data = ");
-	for (i = 0; i < fr->can_dlc; i++)
-		printf("%02x ", fr->data[i]);
-	printf("\n");
+	//printf("dlc = %d\n", fr->can_dlc);
 	if(fr->data[0] == 0x02){
 		for(i = 0; i < 8; i++){
 			rdata[i] = fr->data[i];
@@ -49,10 +47,20 @@ static void handle_frame(struct can_frame *fr)
 		return;
 	}
 #if SERIAL_SEND
-	len = WriteComPort(rdata, 8);
+	tdata[0] = 0xA5;
+	crc = tdata[0];
+	for(i = 1; i < 9; i++) {
+		tdata[i] = rdata[i-1];
+		crc ^= tdata[i];
+	}
+	tdata[9] = crc;
+	len = WriteComPort(tdata, 10);
 	if(len < 0){
 		fprintf(stderr, "Write data to Serial port %d error\n", ttyO1);
 	}
+	for (i = 0; i < 10; i++)
+		printf("%02x ", tdata[i]);
+	printf("\n");
 #else
 	handle_cmd(rdata);
 #endif
@@ -172,6 +180,7 @@ int main(int argc, char *argv[])
        	perror("bind failed");
        	return 1;
    	}
+	/*
 	if (1) {
 		struct can_filter filter[2];
 		filter[0].can_id = 0x200 | CAN_EFF_FLAG;
@@ -187,6 +196,7 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 	}
+	*/
 	test_can_rw(s, master);
 
 	close(s);
