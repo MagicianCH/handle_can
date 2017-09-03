@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/chenhao/Desktop/邱林斌老师项目/handle_can/Inc
+HeaderPath=C:/Users/chenhao/Desktop/邱林斌老师项目/HandleCmd/Inc
 HeaderFiles=gpio.h;tim.h;usart.h;stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=C:/Users/chenhao/Desktop/邱林斌老师项目/handle_can/Src
+SourcePath=C:/Users/chenhao/Desktop/邱林斌老师项目/HandleCmd/Src
 SourceFiles=gpio.h;tim.h;usart.h;stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;gpio.c;tim.c;usart.c;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

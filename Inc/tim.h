@@ -72,9 +72,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN Prototypes */
 
-void pwm_start(void);
 void pwm_setValue(int timx, uint8_t value);
-void pwm_setValue2(int timx, uint8_t value);
 
 /* USER CODE END Prototypes */
 

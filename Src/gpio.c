@@ -41,7 +41,7 @@
 #include "gpio.h"
 /* USER CODE BEGIN 0 */
 
-#define CMD_DEBUG 1
+#define CMD_DEBUG 0
 
 /* USER CODE END 0 */
 
@@ -93,8 +93,8 @@ void MX_GPIO_Init(void)
                           |power_off_Pin|front_led_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, system_on_Pin|transmission_state_Pin|emergency_stop_Pin|back_led_Pin 
-                          |go_head_Pin|go_back_Pin|horn_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, system_on_Pin|transmission_state_Pin|emergency_stop_Pin|led_Pin 
+                          |back_led_Pin|go_head_Pin|go_back_Pin|horn_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PAPin PAPin PAPin PAPin 
                            PAPin PAPin */
@@ -105,9 +105,9 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin 
-                           PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = system_on_Pin|transmission_state_Pin|emergency_stop_Pin|back_led_Pin 
-                          |go_head_Pin|go_back_Pin|horn_Pin;
+                           PBPin PBPin PBPin PBPin */
+  GPIO_InitStruct.Pin = system_on_Pin|transmission_state_Pin|emergency_stop_Pin|led_Pin 
+                          |back_led_Pin|go_head_Pin|go_back_Pin|horn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);

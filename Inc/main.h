@@ -68,7 +68,9 @@
 #define transmission_state_GPIO_Port GPIOB
 #define emergency_stop_Pin GPIO_PIN_14
 #define emergency_stop_GPIO_Port GPIOB
-#define pwm1_Pin GPIO_PIN_11
+#define led_Pin GPIO_PIN_15
+#define led_GPIO_Port GPIOB
+#define pwm1_Pin GPIO_PIN_8
 #define pwm1_GPIO_Port GPIOA
 #define back_led_Pin GPIO_PIN_5
 #define back_led_GPIO_Port GPIOB

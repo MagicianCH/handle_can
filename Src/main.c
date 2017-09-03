@@ -72,7 +72,8 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	
-	uint8_t rxdata[8] = {0};
+	uint8_t crc = 0, i = 0;
+	uint8_t rxdata[10] = {0}, cmddata[8] = {0};
 
   /* USER CODE END 1 */
 
@@ -97,12 +98,10 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
-  MX_TIM4_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
 
   /* USER CODE BEGIN 2 */
-	
-//	pwm_start();
 
   /* USER CODE END 2 */
 
@@ -111,14 +110,38 @@ int main(void)
   while (1)
   {
 		HAL_UART_Receive(&huart1, rxdata, 1, 100);
-		while(rxdata[0] != 0x02) {
-			HAL_UART_Receive(&huart1, rxdata, 1, 100);
+		if(rxdata[0] != 0xA5) {
+			rxdata[0] = 0;
+			continue;
 		}
-		HAL_UART_Receive(&huart1, &rxdata[1], 7, 200);
+		HAL_UART_Receive(&huart1, &rxdata[1], 1, 100);
+		if(rxdata[1] != 0x02) {
+			rxdata[1] = 0;
+			continue;
+		}
+//		HAL_UART_Receive(&huart1, rxdata, 1, 100);
+//		while(rxdata[0] == 0xA5) {
+//			HAL_UART_Receive(&huart1, &rxdata[1] = 
+//			HAL_UART_Receive(&huart1, rxdata, 1, 100);
+//		}
+		HAL_UART_Receive(&huart1, &rxdata[2], 8, 100);
+		crc = rxdata[0];
+		for(i = 1; i < 9; i++) {
+			crc ^= rxdata[i];
+		}
+		if(crc != rxdata[9]) {
+			continue;
+		}
 		
-		handle_cmd(rxdata);
+		HAL_GPIO_TogglePin(GPIOB, led_Pin);
 		
-		HAL_Delay(20);
+		for(i = 0; i < 8; i++) {
+			cmddata[i] = rxdata[i+1];
+		}
+		
+		handle_cmd(cmddata);
+		
+//		HAL_Delay(10);
 		
   /* USER CODE END WHILE */
 
