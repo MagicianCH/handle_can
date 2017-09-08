@@ -11,3 +11,8 @@
 实现串口功能的封装
 ### config.sh
 脚本，用于启动can并设置波特率（1000k）
+### S91canctrl
+开机启动canctrl的脚本，下载后需执行一下操作：
+chmod +x S91canctrl
+scp S91canctrl root@192.168.1.136:/etc/init.d/
+> 注意：执行上边两条命令前需进入到handle_can目录（cd handle_can).
